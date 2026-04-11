@@ -109,16 +109,32 @@ body {
 }
 
 /* ── Tabs de navegación ──────────────────────────────────────── */
-.main-tabs > .tab-container { flex-shrink: 0; }
+#main-tabs .tab-container {
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: wrap !important;
+  width: 100% !important;
+  flex-shrink: 0 !important;
+  gap: 3px !important;
+}
+
+#main-tabs .tab-container > div {
+  flex: 0 0 calc(33.33% - 3px) !important;
+  box-sizing: border-box !important;
+}
+
 .main-tabs .tab {
-  padding: 8px 18px !important;
-  font-size: 0.82rem !important;
+  padding: 8px 10px !important;
+  font-size: 0.80rem !important;
   font-weight: 600 !important;
   color: #546e7a !important;
   border-radius: 6px 6px 0 0 !important;
   background: #e8eaf6 !important;
-  margin-right: 3px !important;
+  margin-right: 0 !important;
   border-bottom: 3px solid transparent !important;
+  text-align: center !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
 }
 .main-tabs .tab--selected {
   background: #ffffff !important;
@@ -128,6 +144,12 @@ body {
 .main-tabs .tab:hover:not(.tab--selected) {
   background: #c5cae9 !important;
   color: #283593 !important;
+}
+#main-tabs .tab-container > div {
+  flex: 0 0 calc(33.33% - 3px) !important;
+  max-width: calc(33.33% - 3px) !important;
+  box-sizing: border-box !important;
+  display: block !important;
 }
 
 /* ── Panel de pestaña activa ────────────────────────────────── */

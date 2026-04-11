@@ -214,6 +214,8 @@ def create_layout() -> html.Div:
                                 id="main-tabs",
                                 value="tab-exploracion",
                                 className="main-tabs",
+                                vertical=False,
+                                mobile_breakpoint=0,
                                 children=[
                                     _tab_exploracion(),
                                     _tab_top_reglas(),
@@ -222,8 +224,6 @@ def create_layout() -> html.Div:
                                     _tab_recomendaciones(all_items),
                                     create_pipeline_tab(),
                                 ],
-                                # Estilos inline de los tabs (override extra)
-                                style={"display": "flex", "flexDirection": "column", "flex": "1"},
                             ),
                         ],
                     ),

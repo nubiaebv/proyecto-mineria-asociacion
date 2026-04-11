@@ -211,7 +211,7 @@ def register_pipeline_callbacks(app) -> None:
                 df_filtered = df_clean[df_clean[desc_col].isin(top_products)]
                 df_grouped = (
                     df_filtered.groupby(invoice_col)[desc_col]
-                    .apply(lambda x: sep_used.join(x.astype(str).str.strip().unique()))
+                    .apply(lambda x: sep_used.join(x.astype(str).str.strip().str.lower().unique()))
                     .reset_index()
                     .rename(columns={desc_col: "Reglas"})
                 )

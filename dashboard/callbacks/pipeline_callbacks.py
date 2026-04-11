@@ -29,17 +29,32 @@ DATASET_NAME_MAP = {
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
-def _decode_csv(contents: str, filename: str) -> pd.DataFrame | None:
-    """Decodifica el contenido base64 de dcc.Upload y retorna DataFrame."""
+def _decode_upload(contents: str, filename: str) -> pd.DataFrame | None:
     try:
-        content_type, content_string = contents.split(",", 1)
+        _, content_string = contents.split(",", 1)
         decoded = base64.b64decode(content_string)
-        for enc in ("utf-8", "latin-1", "cp1252"):
+        ext = filename.rsplit(".", 1)[-1].lower()
+
+        if ext in ("xlsx", "xls"):
+            return pd.read_excel(io.BytesIO(decoded), engine="openpyxl")
+
+        for enc in ("utf-8-sig", "utf-8", "latin-1", "cp1252"):
             try:
-                return pd.read_csv(io.StringIO(decoded.decode(enc)))
+                text = decoded.decode(enc)
+                for sep in (",", ";", "\t"):
+                    try:
+                        df = pd.read_csv(io.StringIO(text), sep=sep, nrows=5,
+                                         on_bad_lines="skip", engine="python")
+                        if df.shape[1] > 1:
+                            return pd.read_csv(io.StringIO(text), sep=sep,
+                                               on_bad_lines="skip", engine="python")
+                    except Exception:
+                        continue
             except UnicodeDecodeError:
                 continue
-    except Exception:
+
+    except Exception as e:
+        print(f"[_decode_upload] ERROR: {e}")
         return None
 
 
@@ -79,7 +94,7 @@ def register_pipeline_callbacks(app) -> None:
         if contents is None:
             return no_update, no_update, True, None, None
 
-        df = _decode_csv(contents, filename)
+        df = _decode_upload(contents, filename)
         if df is None:
             return (
                 _status_err(f"❌ No se pudo leer '{filename}'. Verifica que sea un CSV válido."),
@@ -152,7 +167,7 @@ def register_pipeline_callbacks(app) -> None:
         try:
             # ── Decodificar CSV ──────────────────────────────────────────────
             log(f"📂 Leyendo archivo: {filename}")
-            df_raw = _decode_csv(csv_contents, filename)
+            df_raw = _decode_upload(csv_contents, filename)
             if df_raw is None:
                 raise ValueError("No se pudo decodificar el CSV.")
             log(f"   → {df_raw.shape[0]:,} filas × {df_raw.shape[1]} columnas")
@@ -168,7 +183,12 @@ def register_pipeline_callbacks(app) -> None:
 
             # ── Paso 2: Limpieza ─────────────────────────────────────────────
             log("\n── PASO 1/5 · Limpieza de datos ──")
-            cleaner = DataCleaner(null_strategy=null_strategy)
+            STRATEGY_MAP = {
+                "Eliminar filas con nulos": "drop",
+                "Rellenar (mediana / moda)": "fill",
+                "Sin cambios": "none",
+            }
+            cleaner = DataCleaner(null_strategy=STRATEGY_MAP.get(null_strategy, "drop"))
             df_clean = cleaner.clean(df_raw)
             r = cleaner.report
             log(f"   Duplicados eliminados : {r.get('duplicados_eliminados', 0)}")
@@ -176,13 +196,33 @@ def register_pipeline_callbacks(app) -> None:
             log(f"   Filas resultantes     : {r.get('filas_finales',0):,}")
 
             # ── Paso 3: Transformación ───────────────────────────────────────
-            log("\n── PASO 2/5 · Transformación de datos ──")
-            cols_to_use = rule_columns if rule_columns else None
-            transformer = DataTransformer(rule_columns=cols_to_use)
-            df_transformed = transformer.transform(df_clean)
-            log(f"   Columnas usadas : {cols_to_use or 'inferidas automáticamente'}")
-            log(f"   Ejemplo Reglas  : {df_transformed['Reglas'].iloc[0][:80]}…")
+            # ── Paso 2/5 · Transformación de datos ──
+            invoice_col = next((c for c in df_clean.columns if "invoice" in c.lower()), None)
+            desc_col = next((c for c in df_clean.columns if "descri" in c.lower()), None)
 
+            if invoice_col and desc_col:
+                sep_used = "|"
+                top_products = (
+                    df_clean[desc_col]
+                    .value_counts()
+                    .head(150)
+                    .index.tolist()
+                )
+                df_filtered = df_clean[df_clean[desc_col].isin(top_products)]
+                df_grouped = (
+                    df_filtered.groupby(invoice_col)[desc_col]
+                    .apply(lambda x: sep_used.join(x.astype(str).str.strip().unique()))
+                    .reset_index()
+                    .rename(columns={desc_col: "Reglas"})
+                )
+                df_transformed = df_grouped
+                log(f"   Modo retail: top {len(top_products)} productos, {len(df_transformed):,} transacciones")
+            else:
+                sep_used = ","
+                cols_to_use = rule_columns if rule_columns else None
+                transformer = DataTransformer(rule_columns=cols_to_use)
+                df_transformed = transformer.transform(df_clean)
+                log(f"   Columnas usadas: {cols_to_use or 'inferidas automáticamente'}")
             # ── Paso 4: EDA básico (sin plots) ───────────────────────────────
             log("\n── PASO 3/5 · Estadísticas básicas ──")
             num_cols = df_clean.select_dtypes(include=["int64","float64"]).columns
@@ -197,6 +237,7 @@ def register_pipeline_callbacks(app) -> None:
             apriori_model = AprioriModel(
                 min_support=sup_apriori,
                 min_confidence=conf_apriori,
+                separator=sep_used,
             ).fit(df_transformed)
             n_ap = len(apriori_model.rules_) if apriori_model.rules_ is not None else 0
             log(f"   Itemsets frecuentes : {len(apriori_model.frequent_itemsets_)}")
@@ -214,6 +255,7 @@ def register_pipeline_callbacks(app) -> None:
             eclat_model = ECLATModel(
                 min_support=sup_eclat,
                 min_confidence=conf_eclat,
+                separator=sep_used,
             ).fit(df_transformed)
             n_ec = len(eclat_model.df_rules_) if eclat_model.df_rules_ is not None else 0
             log(f"   Itemsets frecuentes : {len(eclat_model.frequent_itemsets_)}")

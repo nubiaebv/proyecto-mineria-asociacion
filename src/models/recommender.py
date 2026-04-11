@@ -28,7 +28,6 @@ class Recommender:
         if not required.issubset(rules_df.columns):
             raise ValueError(f"El DataFrame de reglas debe tener: {required}")
         self._rules = rules_df.copy()
-        print(f"[Recommender] {len(self._rules)} reglas cargadas.")
         return self
 
     def recommend(self, items: list[str]) -> pd.DataFrame:

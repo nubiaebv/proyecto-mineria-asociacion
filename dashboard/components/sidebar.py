@@ -89,8 +89,8 @@ def create_sidebar(datasets: list[str], all_items: list[str]) -> html.Div:
                 html.Label("📈 Soporte mín.", className="control-label"),
                 dcc.Slider(
                     id="slider-support",
-                    min=0.0, max=0.5, step=0.01, value=0.02,
-                    marks={0: "0", 0.25: ".25", 0.5: ".5"},
+                    min=0.001, max=0.5, step=0.001, value=0.02,
+                    marks={0.001: "0.001", 0.5: ".5"},
                     tooltip={"placement": "right", "always_visible": True},
                 ),
             ]),

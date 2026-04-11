@@ -65,8 +65,8 @@ def create_pipeline_tab() -> dcc.Tab:
                     _col([
                         html.Div("— Apriori —", className="pipe-algo-title"),
                         _label("Soporte mín."),
-                        dcc.Slider(id="pipe-sup-apriori",  min=0.01, max=0.5,  step=0.01, value=0.1,
-                                   marks={0.01:"0.01", 0.25:"0.25", 0.5:"0.5"},
+                        dcc.Slider(id="pipe-sup-apriori",  min=0.001, max=0.5,  step=0.001, value=0.05,
+                                   marks={0.001:"0.001", 0.1:"0.1", 0.5:"0.5", 1:"1"},
                                    tooltip={"placement":"right","always_visible":True}),
                         html.Div(style={"height":"10px"}),
                         _label("Confianza mín."),
@@ -77,8 +77,8 @@ def create_pipeline_tab() -> dcc.Tab:
                     _col([
                         html.Div("— ECLAT —", className="pipe-algo-title"),
                         _label("Soporte mín."),
-                        dcc.Slider(id="pipe-sup-eclat",   min=0.01, max=0.5,  step=0.01, value=0.2,
-                                   marks={0.01:"0.01", 0.25:"0.25", 0.5:"0.5"},
+                        dcc.Slider(id="pipe-sup-eclat",   min=0.001, max=0.5,  step=0.001, value=0.2,
+                                   marks={0.001:"0.001", 0.1:"0.1", 0.5:"0.5", 1:"1"},
                                    tooltip={"placement":"right","always_visible":True}),
                         html.Div(style={"height":"10px"}),
                         _label("Confianza mín."),
@@ -129,7 +129,12 @@ def create_pipeline_tab() -> dcc.Tab:
                 ]),
             ]),
 
-            # ── 5. Log de ejecución ──────────────────────────────────────────
+            # ── 5. Resumen de resultados ─────────────────────────────────────
+            _section("📊 6. Resumen de resultados", [
+                html.Div(id="pipe-results-summary"),
+            ]),
+
+            # ── 6. Log de ejecución ──────────────────────────────────────────
             _section("📋 5. Log de ejecución", [
                 html.Pre(
                     id="pipe-log",
@@ -137,9 +142,6 @@ def create_pipeline_tab() -> dcc.Tab:
                     children="El log aparecerá aquí al ejecutar el pipeline...",
                 ),
             ]),
-
-            # ── 6. Resumen de resultados ─────────────────────────────────────
-            html.Div(id="pipe-results-summary"),
 
             # Store para guardar columnas detectadas
             dcc.Store(id="store-csv-columns"),

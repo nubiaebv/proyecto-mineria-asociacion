@@ -43,7 +43,7 @@ def create_pipeline_tab() -> dcc.Tab:
                     ]),
                     className="upload-zone",
                     multiple=False,
-                    accept=".csv",
+                    accept=".csv,.xlsx,.xls",
                 ),
                 html.Div(id="upload-status", className="upload-status"),
             ]),

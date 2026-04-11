@@ -13,7 +13,6 @@ from dash import Dash
 
 from dashboard.layout import create_layout
 from dashboard.callbacks.charts_callbacks import register_chart_callbacks
-from dashboard.callbacks.pipeline_callbacks import register_pipeline_callbacks
 
 app = Dash(
     __name__,
@@ -26,7 +25,6 @@ app = Dash(
 
 app.layout = create_layout()
 register_chart_callbacks(app)
-register_pipeline_callbacks(app)
 
 # Para despliegue con gunicorn: gunicorn dashboard.app:server
 server = app.server

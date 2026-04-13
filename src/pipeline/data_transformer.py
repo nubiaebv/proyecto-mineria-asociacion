@@ -25,17 +25,48 @@ class DataTransformer:
     # API pública
     # ------------------------------------------------------------------
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
-        """Agrega la columna 'Reglas' y retorna el DataFrame enriquecido."""
+        """
+        Agrega la columna 'Reglas' y retorna el DataFrame transformado.
+        Soporta:
+        1) Dataset ya por transacción (una fila = una compra)
+        2) Dataset transaccional clásico (múltiples filas por factura)
+        """
         df = df.copy()
 
         cols = self._resolve_columns(df)
         print(f"[DataTransformer] Columnas usadas para Reglas: {cols}")
 
+        #  Caso 1: Dataset transaccional clásico (Factura + Producto)
+        if self.rule_columns and len(self.rule_columns) == 2: # para cuando se definen manualmente 2 columnas, si no, va al caso 2
+            invoice_col, item_col = self.rule_columns
+
+            if df[invoice_col].duplicated().any():
+                print("[DataTransformer] Dataset transaccional detectado. Agrupando por factura...")
+
+                grouped = (
+                    df.groupby(invoice_col)[item_col]
+                    .apply(lambda x: self.separator.join(
+                        x.astype(str).str.strip().unique()
+                    ))
+                    .reset_index()
+                )
+
+                grouped = grouped.rename(columns={item_col: self.output_col})
+                return grouped
+
+        # Caso 2: Ya viene una fila = una transacción
         df[self.output_col] = df[cols].apply(
-            lambda row: self.separator.join(row.astype(str).str.strip()), axis=1
+            lambda row: self.separator.join(
+                row.astype(str).str.strip().unique()
+            ),
+            axis=1
         )
-        print(f"[DataTransformer] Columna '{self.output_col}' creada. "
-              f"Ejemplo: {df[self.output_col].iloc[0]}")
+
+        print(
+            f"[DataTransformer] Columna '{self.output_col}' creada. "
+            f"Ejemplo: {df[self.output_col].iloc[0]}"
+        )
+
         return df
 
     # ------------------------------------------------------------------
@@ -46,17 +77,18 @@ class DataTransformer:
             missing = [c for c in self.rule_columns if c not in df.columns]
             if missing:
                 raise ValueError(
-                    f"Columnas no encontradas en el DataFrame: {missing}\n"
-                    f"Columnas disponibles: {df.columns.tolist()}"
+                    f"Columnas no encontradas: {missing}\n"
+                    f"Disponibles: {df.columns.tolist()}"
                 )
             return self.rule_columns
 
-        # Inferencia automática: usa todas las columnas categóricas
-        inferred = df.select_dtypes(include=["object", "str"]).columns.tolist()
+        # Inferencia automática: columnas categóricas
+        inferred = df.select_dtypes(include=["object", "string"]).columns.tolist()
+
         if not inferred:
             raise ValueError(
                 "No se encontraron columnas categóricas. "
-                "Especifique 'rule_columns' manualmente."
+                "Defina 'rule_columns' manualmente."
             )
         print(f"[DataTransformer] Columnas inferidas automáticamente: {inferred}")
         return inferred

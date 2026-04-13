@@ -80,8 +80,8 @@ def create_sidebar(datasets: list[str], all_items: list[str]) -> html.Div:
                 html.Label("⚡ Lift mín.", className="control-label"),
                 dcc.Slider(
                     id="slider-lift",
-                    min=1.0, max=10.0, step=0.5, value=1.0,
-                    marks={1: "1", 5: "5", 10: "10"},
+                    min=1.0, max=20.0, step=0.5, value=1.0,
+                    marks={1: "1", 5: "5", 10: "10", 15: "15", 20: "20"},
                     tooltip={"placement": "right", "always_visible": True},
                 ),
 

@@ -36,8 +36,12 @@ class AprioriModel:
         )
 
         te = TransactionEncoder()
-        te_array = te.fit(transactions).transform(transactions)
-        df_encoded = pd.DataFrame(te_array, columns=te.columns_).replace(False, 0)
+        te_array = te.fit(transactions).transform(transactions, sparse=True) # crea una matriz sparse (ubicación, ej: fila 1, col2)
+
+        df_encoded = pd.DataFrame.sparse.from_spmatrix(
+            te_array,
+            columns=te.columns_
+        ) # guarda solo las posiciones donde hay TRUE en la matriz reduciendo memoria
 
         self.frequent_itemsets_ = apriori(
             df_encoded, min_support=self.min_support, use_colnames=True, verbose=0

@@ -43,7 +43,7 @@ class EDAAnalyzer:
         self._estadisticas_categoricas(df)
         self._duplicados(df)
         self._nulos(df)
-        self._plots_numericos(df)
+        self._plots_sin_outliers(df)
 
         print("\n[EDAAnalyzer] Análisis completo.\n")
         return self._summary
@@ -109,10 +109,20 @@ class EDAAnalyzer:
             print(por_col.to_string())
         self._summary["nulos"] = {"total": int(total_nulos), "porcentaje": pct}
 
-    def _plots_numericos(self, df: pd.DataFrame):
+    def _plots_sin_outliers(self, df: pd.DataFrame):
         num_cols = df.select_dtypes(include=["int64", "float64"]).columns
         if len(num_cols) == 0:
             return
+
+        df_plot = df.copy()
+        for col in num_cols:
+            Q1 = df_plot[col].quantile(0.25)
+            Q3 = df_plot[col].quantile(0.75)
+            IQR = Q3 - Q1
+            df_plot[col] = df_plot[col].where(
+                (df_plot[col] >= Q1 - 1.5 * IQR) &
+                (df_plot[col] <= Q3 + 1.5 * IQR)
+            )
 
         n_cols = 3
         n_rows = (len(num_cols) + n_cols - 1) // n_cols
@@ -120,19 +130,18 @@ class EDAAnalyzer:
         axes = axes.flatten() if len(num_cols) > 1 else [axes]
 
         for idx, col in enumerate(num_cols):
-            axes[idx].boxplot(df[col].dropna(), vert=True)
+            axes[idx].boxplot(df_plot[col].dropna(), vert=True)
             axes[idx].set_title(f"Boxplot – {col}", fontweight="bold")
-            axes[idx].set_ylabel(col)
             axes[idx].grid(alpha=0.3)
 
         for idx in range(len(num_cols), len(axes)):
             axes[idx].set_visible(False)
 
-        plt.suptitle("Detección de Outliers (Boxplots)", fontsize=14, fontweight="bold")
+        plt.suptitle("Boxplots sin outliers extremos", fontsize=14, fontweight="bold")
         plt.tight_layout()
 
         if self.save_plots and self.reports_path:
-            path = f"{self.reports_path}/eda_boxplots.png"
+            path = f"{self.reports_path}/eda_boxplots_sin_outliers.png"
             plt.savefig(path, dpi=120, bbox_inches="tight")
             print(f"[EDAAnalyzer] Plot guardado: {path}")
         plt.show()

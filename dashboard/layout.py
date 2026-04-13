@@ -122,69 +122,6 @@ def _tab_tabla() -> dcc.Tab:
     )
 
 
-def _tab_recomendaciones(all_items: list[str]) -> dcc.Tab:
-    return dcc.Tab(
-        label="💡 Recomendaciones & Propuestas",
-        value="tab-rec",
-        children=_panel([
-            html.Div(
-                className="rec-layout",
-                children=[
-
-                    # ── Panel izquierdo: selector + propuestas ──
-                    html.Div(className="rec-left", children=[
-
-                        # Selector de ítems
-                        html.Div([
-                            html.Div("🛒 Recomendador de ítems",
-                                     className="rec-section-title"),
-                            dcc.Dropdown(
-                                id="dd-rec-items",
-                                options=[{"label": i.title(), "value": i}
-                                         for i in all_items],
-                                multi=True,
-                                placeholder="Elige ítems del carrito...",
-                            ),
-                        ]),
-
-                        # Resultados de recomendación
-                        html.Div([
-                            html.Div("✅ Ítems recomendados",
-                                     className="rec-section-title"),
-                            html.Div(
-                                id="div-recommendations",
-                                className="cards-scroll",
-                                children=[
-                                    html.Div(className="placeholder-msg", children=[
-                                        html.Div("🎯", className="placeholder-icon"),
-                                        html.Div("Selecciona ítems arriba para ver recomendaciones"),
-                                    ])
-                                ],
-                            ),
-                        ]),
-                    ]),
-
-                    # ── Panel derecho: propuestas de negocio ────
-                    html.Div(className="rec-right", children=[
-                        html.Div("🏢 Propuestas de negocio",
-                                 className="rec-section-title"),
-                        html.Div(
-                            id="div-proposals",
-                            className="cards-scroll",
-                            children=[
-                                html.Div(className="placeholder-msg", children=[
-                                    html.Div("📌", className="placeholder-icon"),
-                                    html.Div("Las propuestas aparecerán aquí"),
-                                ])
-                            ],
-                        ),
-                    ]),
-                ],
-            )
-        ]),
-    )
-
-
 # ── Layout principal ──────────────────────────────────────────────────────────
 
 def create_layout() -> html.Div:
@@ -221,7 +158,6 @@ def create_layout() -> html.Div:
                                     _tab_top_reglas(),
                                     _tab_heatmap(),
                                     _tab_tabla(),
-                                    _tab_recomendaciones(all_items),
                                     create_pipeline_tab(),
                                 ],
                             ),

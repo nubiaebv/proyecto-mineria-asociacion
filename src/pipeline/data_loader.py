@@ -1,6 +1,6 @@
 """
 Módulo de carga de datos.
-Leer cualquier archivo CSV y retornar un DataFrame limpio.
+Leer cualquier archivo CSV o excel y retornar un DataFrame limpio.
 """
 import pandas as pd
 from pathlib import Path
@@ -28,16 +28,24 @@ class DataLoader:
     # API pública
     # ------------------------------------------------------------------
     def load(self) -> pd.DataFrame:
-        """Lee el CSV y retorna el DataFrame crudo."""
+        """Lee el CSV o excel y retorna el DataFrame crudo."""
         if not self.filepath.exists():
             raise FileNotFoundError(f"Archivo no encontrado: {self.filepath}")
 
-        self._df = pd.read_csv(
-            self.filepath,
-            delimiter=self.delimiter,
-            decimal=self.decimal,
-            encoding=self.encoding,
-        )
+        suffix = self.filepath.suffix.lower()
+
+        if suffix in [".xlsx", ".xls"]:
+            self._df = pd.read_excel(self.filepath)
+
+        else:
+            self._df = pd.read_csv(
+                self.filepath,
+                sep=None,
+                engine="python",
+                decimal=self.decimal,
+                encoding=self.encoding,
+            )
+
         print(f"[DataLoader] Cargado '{self.filepath.name}': "
               f"{self._df.shape[0]} filas × {self._df.shape[1]} columnas")
         return self._df

@@ -1,0 +1,43 @@
+antecedents,consequents,support,confidence,lift
+{'60 teatime fairy cake cases'},{'72 sweetheart fairy cake cases'},0.020183997769724002,0.3169877408056042,8.15663576951006
+{'72 sweetheart fairy cake cases'},{'60 teatime fairy cake cases'},0.020183997769724002,0.5193687230989956,8.156635769510059
+{'60 teatime fairy cake cases'},{'pack of 60 pink paisley cake cases'},0.026205742960691385,0.4115586690017513,7.9113662685384885
+{'pack of 60 pink paisley cake cases'},{'60 teatime fairy cake cases'},0.026205742960691385,0.5037513397642015,7.9113662685384885
+{'60 teatime fairy cake cases'},{'pack of 72 retro spot cake cases'},0.026707555059938666,0.4194395796847636,6.435114509534846
+{'pack of 72 retro spot cake cases'},{'60 teatime fairy cake cases'},0.026707555059938666,0.4097519247219846,6.435114509534845
+{'assorted colour bird ornament'},{'white hanging heart t-light holder'},0.021800947867298578,0.2917910447761194,1.6811025981560237
+{'hot water bottle tea and sympathy'},{'chocolate hot water bottle'},0.02157792026763312,0.4558303886925795,10.143074467991829
+{'chocolate hot water bottle'},{'hot water bottle tea and sympathy'},0.02157792026763312,0.4801488833746898,10.143074467991827
+{'heart of wicker small'},{'heart of wicker large'},0.027432394758851408,0.5571913929784824,9.963337620208456
+{'heart of wicker large'},{'heart of wicker small'},0.027432394758851408,0.4905284147557328,9.963337620208456
+{'heart of wicker large'},{'white hanging heart t-light holder'},0.02135489266796766,0.3818544366899302,2.19998693287308
+{'love building block word'},{'home building block word'},0.029216615556175076,0.5452653485952134,8.25957265798577
+{'home building block word'},{'love building block word'},0.029216615556175076,0.44256756756756754,8.25957265798577
+{'home building block word'},{'white hanging heart t-light holder'},0.021800947867298578,0.33023648648648646,1.9025992242644185
+{'love building block word'},{'white hanging heart t-light holder'},0.020685809868971287,0.3860561914672217,2.224194601337816
+{'lunch bag red spotty'},{'lunch bag  black skull.'},0.022748815165876776,0.3756906077348066,6.765071335064013
+{'lunch bag  black skull.'},{'lunch bag red spotty'},0.022748815165876776,0.40963855421686746,6.765071335064013
+{'lunch bag spaceboy design'},{'lunch bag  black skull.'},0.020685809868971287,0.4050218340611354,7.2932395520948425
+{'lunch bag  black skull.'},{'lunch bag spaceboy design'},0.020685809868971287,0.37248995983935745,7.2932395520948425
+{'lunch bag suki  design'},{'lunch bag  black skull.'},0.02146640646780039,0.39896373056994816,7.184151112220904
+{'lunch bag  black skull.'},{'lunch bag suki  design'},0.02146640646780039,0.3865461847389558,7.1841511122209045
+{'lunch bag red spotty'},{'lunch bag cars blue'},0.020908837468636744,0.3453038674033149,7.110246684131405
+{'lunch bag cars blue'},{'lunch bag red spotty'},0.020908837468636744,0.4305396096440873,7.110246684131404
+{'lunch bag suki  design'},{'lunch bag cars blue'},0.020407025369389462,0.37927461139896373,7.809747595224357
+{'lunch bag cars blue'},{'lunch bag suki  design'},0.020407025369389462,0.4202066590126292,7.809747595224358
+{'lunch bag red spotty'},{'lunch bag pink retrospot'},0.022247003066629495,0.367403314917127,8.856691469138001
+{'lunch bag pink retrospot'},{'lunch bag red spotty'},0.022247003066629495,0.5362903225806451,8.856691469138001
+{'lunch bag suki  design'},{'lunch bag spaceboy design'},0.02531363256202955,0.47046632124352333,9.211586759282305
+{'lunch bag spaceboy design'},{'lunch bag suki  design'},0.02531363256202955,0.49563318777292575,9.211586759282305
+{'pack of 72 retro spot cake cases'},{'pack of 60 pink paisley cake cases'},0.02280457206579314,0.3498716852010265,6.72556127982895
+{'pack of 60 pink paisley cake cases'},{'pack of 72 retro spot cake cases'},0.02280457206579314,0.4383708467309753,6.72556127982895
+{'white hanging heart t-light holder'},{'red hanging heart t-light holder'},0.040702536938946196,0.2345004818503052,4.143611962547018
+{'red hanging heart t-light holder'},{'white hanging heart t-light holder'},0.040702536938946196,0.7192118226600985,4.143611962547018
+{'sweetheart ceramic trinket box'},{'strawberry ceramic trinket box'},0.03590744354613883,0.7558685446009389,9.272573425046401
+{'strawberry ceramic trinket box'},{'sweetheart ceramic trinket box'},0.03590744354613883,0.44049247606019154,9.272573425046403
+{'wooden frame antique white'},{'white hanging heart t-light holder'},0.02481182046278227,0.4320388349514563,2.489115485015859
+{'wooden picture frame white finish'},{'white hanging heart t-light holder'},0.02146640646780039,0.463855421686747,2.6724211332964365
+{'wood 2 drawer cabinet white finish'},{'wood s/3 cabinet ant white finish'},0.020183997769724002,0.5801282051282051,15.122964184555753
+{'wood s/3 cabinet ant white finish'},{'wood 2 drawer cabinet white finish'},0.020183997769724002,0.5261627906976744,15.122964184555752
+{'wooden frame antique white'},{'wooden picture frame white finish'},0.031112350153331476,0.541747572815534,11.706316528248918
+{'wooden picture frame white finish'},{'wooden frame antique white'},0.031112350153331476,0.6722891566265061,11.70631652824892

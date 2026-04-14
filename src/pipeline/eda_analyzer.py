@@ -52,11 +52,11 @@ class EDAAnalyzer:
     # Helpers privados
     # ------------------------------------------------------------------
     def _dimensiones(self, df: pd.DataFrame):
-        print(f"\n📐 Dimensiones: {df.shape[0]} filas × {df.shape[1]} columnas")
+        print(f"\n Dimensiones: {df.shape[0]} filas × {df.shape[1]} columnas")
         self._summary["shape"] = df.shape
 
     def _tipos_datos(self, df: pd.DataFrame):
-        print("\n🔤 Tipos de datos:")
+        print("\n Tipos de datos:")
         print(df.dtypes.to_string())
         self._summary["dtypes"] = df.dtypes.to_dict()
 
@@ -64,7 +64,7 @@ class EDAAnalyzer:
         num_cols = df.select_dtypes(include=["int64", "float64"]).columns
         if len(num_cols) == 0:
             return
-        print("\n📊 Estadísticas numéricas:")
+        print("\n Estadísticas numéricas:")
         desc = df[num_cols].describe().T
         print(desc.to_string())
         extras = {}
@@ -83,7 +83,7 @@ class EDAAnalyzer:
         cat_cols = df.select_dtypes(include=["object", "str"]).columns
         if len(cat_cols) == 0:
             return
-        print("\n🏷️  Estadísticas categóricas:")
+        print("\n  Estadísticas categóricas:")
         cat_stats = {}
         for col in cat_cols:
             n_unique = df[col].nunique()
@@ -96,13 +96,13 @@ class EDAAnalyzer:
     def _duplicados(self, df: pd.DataFrame):
         n_dups = df.duplicated().sum()
         pct = round(n_dups / len(df) * 100, 2) if len(df) > 0 else 0
-        print(f"\n🔁 Duplicados: {n_dups} ({pct}%)")
+        print(f"\n Duplicados: {n_dups} ({pct}%)")
         self._summary["duplicados"] = {"cantidad": int(n_dups), "porcentaje": pct}
 
     def _nulos(self, df: pd.DataFrame):
         total_nulos = df.isnull().sum().sum()
         pct = round(total_nulos / df.size * 100, 2)
-        print(f"\n⚠️  Nulos totales: {total_nulos} ({pct}%)")
+        print(f"\n  Nulos totales: {total_nulos} ({pct}%)")
         por_col = df.isnull().sum()
         por_col = por_col[por_col > 0]
         if len(por_col):
